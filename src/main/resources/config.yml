@@ -1,0 +1,29 @@
+#
+# Determines the range in a circular area centered on the sender
+# for other players to see the local chat
+#
+#
+LocalChatRange: 1000
+#
+# Chat prefixes for each channel
+#
+# <fcolor> is a placeholder for the faction colors set in factions config files
+#
+ChatPrefixes:
+  Ally: '§e[<fcolor>ALLY§e]§r '
+  Truce: '§e[<fcolor>TRUCE§e]§r '
+  Faction: '§e[<fcolor>FACTION§e]§r '
+  Enemy: '§e[<fcolor>ENEMY§e]§r '
+  Neutral: '§e[<fcolor>NEUTRAL§e]§r '
+  Local: '§e[§rLOCAL§e]§r '
+  Global: '§e[§6GLOBAL§e]§r '
+  Staff: '§e[§4STAFF§e]§r '
+#
+# Discord settings. Requires DiscordSRV to be installed
+#
+# You also need to add this to Channels in DiscordSRV config.yml
+# or else, it won't work
+#
+DiscordStaffChannel: 'staff'
+
+

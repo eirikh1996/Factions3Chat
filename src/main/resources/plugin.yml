@@ -1,0 +1,26 @@
+name: Factions3Chat
+main: io.github.eirikh1996.factions3chat.Main
+version: ${project.version}
+api-version: 1.13
+depend:
+  - Factions
+  - MassiveCore
+softdepend:
+  - DiscordSRV
+  - Essentials
+
+permissions:
+  factions3chat.ally:
+    default: true
+  factions3chat.truce:
+    default: true
+  factions3chat.faction:
+    default: true
+  factions3chat.local:
+    default: true
+  factions3chat.global:
+    default: true
+  factions3chat.enemy:
+    default: true
+  factions3chat.neutral:
+    default: true
