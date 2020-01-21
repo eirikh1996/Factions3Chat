@@ -4,15 +4,11 @@ import com.massivecraft.factions.entity.MPlayerColl
 import github.scarsz.discordsrv.DiscordSRV
 import github.scarsz.discordsrv.api.Subscribe
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostProcessEvent
-import github.scarsz.discordsrv.api.events.DiscordGuildMessagePreProcessEvent
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent
-import github.scarsz.discordsrv.util.DiscordUtil
-import github.scarsz.discordsrv.util.LangUtil
 import io.github.eirikh1996.factions3chat.ChatMode
 import io.github.eirikh1996.factions3chat.ChatPrefixes
 import io.github.eirikh1996.factions3chat.Main
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 
 
 class DiscordSRVListener {
@@ -24,7 +20,7 @@ class DiscordSRVListener {
         if (cm == ChatMode.GLOBAL) {
             return
         } else if (cm == ChatMode.STAFF) {
-            event.channel = Main.instance.discordStaffChannel
+            event.channel = "staff"
             return
         }
         event.isCancelled = true
@@ -34,20 +30,13 @@ class DiscordSRVListener {
     fun onMessageReceive(event : DiscordGuildMessagePostProcessEvent) {
         val user = event.message.author
         val dsrv = Main.instance.discordSrvPlugin
-        val pid = dsrv!!.accountLinkManager.getUuid(user.id)
         val channel = event.channel
-        if (DiscordSRV.getPlugin().channels.get(Main.instance.discordStaffChannel) != channel.id) {
+        if (DiscordSRV.getPlugin().channels.get("staff") != channel.id) {
             return
         }
+        //Cancel event
         event.isCancelled = true
-        if (pid == null) {
-            return
-        }
-        val player = Bukkit.getPlayer(pid)
-        if (player == null) {
-            return
-        }
-
+        //Then broadcast in staff channel
         Bukkit.broadcast(ChatPrefixes.STAFF +  event.processedMessage, "factions3chat.staff")
 
     }

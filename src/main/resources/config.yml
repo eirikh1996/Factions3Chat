@@ -21,9 +21,10 @@ ChatPrefixes:
 #
 # Discord settings. Requires DiscordSRV to be installed
 #
-# You also need to add this to Channels in DiscordSRV config.yml
-# or else, it won't work
+# The channel ID for the channel in your discord guild to link staff chat to
 #
-DiscordStaffChannel: 'staff'
+# Right click the text channel, select "copy ID" and replace the current value with copied ID
+#
+DiscordStaffChannel: '000000000000000000'
 
 

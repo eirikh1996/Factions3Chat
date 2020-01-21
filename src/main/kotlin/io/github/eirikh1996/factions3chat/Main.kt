@@ -23,7 +23,6 @@ class Main : JavaPlugin() {
 
     val chatModes = HashMap<MPlayer, ChatMode>()
     var localChatRange = 1000
-    var discordStaffChannel = "000000000000000000"
     var discordSrvPlugin : DiscordSRV? = null
     var factionsPlugin : Factions? = null
     var essentialsPlugin : Essentials? = null
@@ -76,7 +75,8 @@ class Main : JavaPlugin() {
         if (dsrv is DiscordSRV) {
             logger.info("DiscordSRV detected")
             discordSrvPlugin = dsrv
-            discordStaffChannel = config.getString("DiscordStaffChannel", "staff")!!
+            DiscordSRV.getPlugin().channels.put("staff", config.getString("DiscordStaffChannel", "000000000000000000")!!)
+            logger.info("Registered channel ID " + DiscordSRV.getPlugin().channels.get("staff") + " for staff chat")
             DiscordSRV.api.subscribe(DiscordSRVListener())
         }
         //Check for Essentials
@@ -86,6 +86,7 @@ class Main : JavaPlugin() {
             essentialsPlugin = ess
         }
         server.pluginManager.registerEvents(ChatListener(), this)
+        UpdateManager.runTaskTimerAsynchronously(this, 0, 10000000000)
     }
 
     override fun onDisable() {
