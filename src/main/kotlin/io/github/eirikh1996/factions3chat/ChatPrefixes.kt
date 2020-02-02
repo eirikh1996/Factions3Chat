@@ -9,6 +9,7 @@ object ChatPrefixes {
     var LOCAL = "[LOCAL]"
     var GLOBAL = "[GLOBAL]"
     var STAFF = "[STAFF]"
+    var WORLD = "[WORLD]"
 
     fun getPrefix(cm : ChatMode) : String {
         when (cm) {
@@ -20,6 +21,7 @@ object ChatPrefixes {
             ChatMode.STAFF -> return STAFF
             ChatMode.ENEMY -> return ENEMY
             ChatMode.NEUTRAL -> return NEUTRAL
+            ChatMode.WORLD -> return WORLD
         }
     }
 }

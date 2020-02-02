@@ -16,12 +16,16 @@ object TypeChatMode : TypeAbstract<ChatMode?>(ChatMode::class.java) {
             }
             args.add(cm.name.toLowerCase())
         }
+        args.add("public")
+        args.add("p")
         return args
     }
 
     override fun read(p0: String?, p1: CommandSender?): ChatMode? {
         if (p0 == null) {
             return null
+        } else if (p0.equals("public", true) || p0.equals("p", true)) {
+            return ChatMode.GLOBAL
         }
         return ChatMode.getChatMode(p0.toUpperCase())
     }

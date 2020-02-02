@@ -6,23 +6,38 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
-object UpdateManager : BukkitRunnable() {
+object UpdateManager : BukkitRunnable(), Listener {
     override fun run() {
         val currentVersion = Main.instance.description.version.toDouble()
         val newVersion = getNewVersion(currentVersion)
         GlobalScope.async {
             delay(5000)
-            if (currentVersion <= newVersion) {
+            if (newVersion <= currentVersion) {
                 Main.instance.logger.info("You are up to date")
                 return@async
             }
             Main.instance.logger.warning("There is a new update available at https://dev.bukkit.org/projects/factions3chat/files")
         }
+    }
+
+    @EventHandler
+    fun onPlayerJoin(event : PlayerJoinEvent) {
+        if (!event.player.hasPermission("factions3chat.update")) {
+            return
+        }
+        if (getNewVersion(Main.instance.description.version.toDouble()) <= Main.instance.description.version.toDouble()) {
+            return
+        }
+        event.player.sendMessage("There is a new update of Factions3Chat available at https://dev.bukkit.org/projects/factions3chat/files")
+
     }
 
     fun getNewVersion (currentVersion : Double) : Double {

@@ -2,26 +2,25 @@ package io.github.eirikh1996.factions3chat
 
 import com.earth2me.essentials.Essentials
 import com.massivecraft.factions.Factions
-import com.massivecraft.factions.cmd.CmdFactions
 import com.massivecraft.factions.entity.MConf
-import com.massivecraft.factions.entity.MPlayer
 import com.massivecraft.massivecore.command.MassiveCommand
+import com.massivecraft.factions.cmd.CmdFactions
 import github.scarsz.discordsrv.DiscordSRV
 import io.github.eirikh1996.factions3chat.cmd.CmdFactionsChat
-import io.github.eirikh1996.factions3chat.listener.DiscordSRVListener
 import io.github.eirikh1996.factions3chat.listener.ChatListener
+import io.github.eirikh1996.factions3chat.listener.DiscordSRVListener
+import org.bukkit.configuration.InvalidConfigurationException
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import org.yaml.snakeyaml.Yaml
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.PrintWriter
+import java.io.*
 import java.util.*
 import kotlin.collections.HashMap
 
+
 class Main : JavaPlugin() {
 
-    val chatModes = HashMap<MPlayer, ChatMode>()
+    val chatModes = HashMap<UUID, ChatMode>()
     var localChatRange = 1000
     var discordSrvPlugin : DiscordSRV? = null
     var factionsPlugin : Factions? = null
@@ -35,16 +34,13 @@ class Main : JavaPlugin() {
             if (data != null) {
                 for (entry in data) {
                     val id = UUID.fromString(entry.key)
-                    val p = MPlayer.get(id)
-                    if (p == null) {
-                        continue
-                    }
-                    chatModes.put(p, ChatMode.getChatMode(entry.value)!!)
+                    chatModes.put(id, ChatMode.getChatMode(entry.value)!!)
                 }
             }
 
         }
         saveDefaultConfig()
+        updateConfig()
         CmdFactions.get().addChild<MassiveCommand>(CmdFactionsChat())
         localChatRange = config.getInt("LocalChatRange", 1000)
         val chatPrefix = config.getConfigurationSection("ChatPrefixes")!!
@@ -56,6 +52,8 @@ class Main : JavaPlugin() {
         ChatPrefixes.LOCAL = chatPrefix.getString("Local", "§e[§rLOCAL§e]§r ")!!
         ChatPrefixes.GLOBAL = chatPrefix.getString("Global", "§e[§6GLOBAL§e]§r ")!!
         ChatPrefixes.STAFF = chatPrefix.getString("Staff", "§e[§4STAFF§e]§r ")!!
+        ChatPrefixes.WORLD = chatPrefix.getString("World", "§e[§3WORLD§e]§r ")!!
+        TextColors.initialize(config.getConfigurationSection("TextColors")!!)
         //Check for Factions
         val f = server.pluginManager.getPlugin("Factions")
         if (f is Factions) {
@@ -86,11 +84,8 @@ class Main : JavaPlugin() {
             essentialsPlugin = ess
         }
         server.pluginManager.registerEvents(ChatListener(), this)
+        server.pluginManager.registerEvents(UpdateManager, this)
         UpdateManager.runTaskTimerAsynchronously(this, 0, 10000000000)
-    }
-
-    override fun onDisable() {
-
     }
 
     override fun onLoad() {
@@ -104,9 +99,32 @@ class Main : JavaPlugin() {
         }
         val writer = PrintWriter(FileOutputStream(chatmodes))
         for (entry in chatModes) {
-            writer.println(entry.key.uuid.toString() + ": " + entry.value.name)
+            writer.println(entry.key.toString() + ": " + entry.value.name)
         }
         writer.close()
+    }
+
+    fun updateConfig() {
+        val cfg = YamlConfiguration()
+        cfg.load(getResource("config.yml")!!.reader())
+        try {
+            if (File(getDataFolder().toString() + "/config.yml").exists()) {
+                var changesMade = false
+                val tmp = YamlConfiguration()
+                tmp.load(getDataFolder().toString() + "/config.yml")
+                for (str in cfg.getKeys(true)) {
+                    if (!tmp.getKeys(true).contains(str)) {
+                        tmp[str!!] = cfg.get(str)
+                        changesMade = true
+                    }
+                }
+                if (changesMade) tmp.save(getDataFolder().toString() + "/config.yml")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: InvalidConfigurationException) {
+            e.printStackTrace()
+        }
     }
 
 

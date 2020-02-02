@@ -15,8 +15,7 @@ class DiscordSRVListener {
 
     @Subscribe
     fun onGameChatMessage(event : GameChatMessagePreProcessEvent) {
-        val mp = MPlayerColl.get().get(event.player)
-        val cm = Main.instance.chatModes.getOrDefault(mp, ChatMode.GLOBAL)
+        val cm = Main.instance.chatModes.getOrDefault(event.player.uniqueId, ChatMode.GLOBAL)
         if (cm == ChatMode.GLOBAL) {
             return
         } else if (cm == ChatMode.STAFF) {
@@ -28,8 +27,6 @@ class DiscordSRVListener {
 
     @Subscribe
     fun onMessageReceive(event : DiscordGuildMessagePostProcessEvent) {
-        val user = event.message.author
-        val dsrv = Main.instance.discordSrvPlugin
         val channel = event.channel
         if (DiscordSRV.getPlugin().channels.get("staff") != channel.id) {
             return

@@ -3,7 +3,7 @@ package io.github.eirikh1996.factions3chat
 import java.lang.IllegalArgumentException
 
 enum class ChatMode {
-    FACTION, ALLY, TRUCE, NEUTRAL, ENEMY, LOCAL, GLOBAL, STAFF;
+    FACTION, ALLY, TRUCE, NEUTRAL, ENEMY, LOCAL, GLOBAL, WORLD, STAFF;
 
 
     companion object {

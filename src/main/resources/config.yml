@@ -18,6 +18,18 @@ ChatPrefixes:
   Local: '§e[§rLOCAL§e]§r '
   Global: '§e[§6GLOBAL§e]§r '
   Staff: '§e[§4STAFF§e]§r '
+  World: '§e[§3WORLD§e]§r '
+
+TextColors:
+  Ally: '<fcolor>'
+  Truce: '<fcolor>'
+  Faction: '<fcolor>'
+  Enemy: '<fcolor>'
+  Neutral: '<fcolor>'
+  Local: '§r'
+  Global: '§6'
+  Staff: '§4'
+  World: '§3'
 #
 # Discord settings. Requires DiscordSRV to be installed
 #

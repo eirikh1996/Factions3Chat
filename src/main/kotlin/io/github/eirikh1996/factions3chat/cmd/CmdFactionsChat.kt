@@ -14,6 +14,7 @@ import org.bukkit.ChatColor
 class CmdFactionsChat : FactionsCommand() {
     init {
         addParameter(TypeChatMode)
+        setDesc("Switches chat mode")
         this.addAliases<CmdFactionsChat>("chat", "c")
     }
 
@@ -31,7 +32,7 @@ class CmdFactionsChat : FactionsCommand() {
             msender.message(ChatColor.YELLOW.toString() + "You don't have permission for the following chat mode: " + cm.name.toLowerCase())
             return
         }
-        Main.instance.chatModes.put(msender, cm)
+        Main.instance.chatModes.put(msender.uuid, cm)
         msender.message(ChatColor.YELLOW.toString() + "Chatmode set : " + cm.name)
         Main.instance.saveChatModesFile()
     }
