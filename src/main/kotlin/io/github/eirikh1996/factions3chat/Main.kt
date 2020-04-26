@@ -7,6 +7,7 @@ import com.massivecraft.massivecore.command.MassiveCommand
 import com.massivecraft.factions.cmd.CmdFactions
 import github.scarsz.discordsrv.DiscordSRV
 import io.github.eirikh1996.factions3chat.cmd.CmdFactionsChat
+import io.github.eirikh1996.factions3chat.cmd.CmdQuickMessage
 import io.github.eirikh1996.factions3chat.listener.ChatListener
 import io.github.eirikh1996.factions3chat.listener.DiscordSRVListener
 import org.bukkit.configuration.InvalidConfigurationException
@@ -42,6 +43,7 @@ class Main : JavaPlugin() {
         saveDefaultConfig()
         updateConfig()
         CmdFactions.get().addChild<MassiveCommand>(CmdFactionsChat())
+        CmdFactions.get().addChild<MassiveCommand>(CmdQuickMessage())
         localChatRange = config.getInt("LocalChatRange", 1000)
         val chatPrefix = config.getConfigurationSection("ChatPrefixes")!!
         ChatPrefixes.ALLY = chatPrefix.getString("Ally", "§e[<fcolor>ALLY§e]§r ")!!.replace("<fcolor>", MConf.get().colorAlly.toString(), false)
@@ -83,7 +85,7 @@ class Main : JavaPlugin() {
             logger.info("Essentials detected")
             essentialsPlugin = ess
         }
-        server.pluginManager.registerEvents(ChatListener(), this)
+        server.pluginManager.registerEvents(ChatListener, this)
         server.pluginManager.registerEvents(UpdateManager, this)
         UpdateManager.runTaskTimerAsynchronously(this, 0, 10000000000)
     }

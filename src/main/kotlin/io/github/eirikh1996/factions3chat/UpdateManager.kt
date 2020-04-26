@@ -16,11 +16,11 @@ import java.net.URL
 
 object UpdateManager : BukkitRunnable(), Listener {
     override fun run() {
-        val currentVersion = Main.instance.description.version.toDouble()
-        val newVersion = getNewVersion(currentVersion)
+
         GlobalScope.async {
+            val newVersion = getNewVersion()
             delay(5000)
-            if (newVersion <= currentVersion) {
+            if (newVersion == null) {
                 Main.instance.logger.info("You are up to date")
                 return@async
             }
@@ -33,14 +33,20 @@ object UpdateManager : BukkitRunnable(), Listener {
         if (!event.player.hasPermission("factions3chat.update")) {
             return
         }
-        if (getNewVersion(Main.instance.description.version.toDouble()) <= Main.instance.description.version.toDouble()) {
-            return
-        }
-        event.player.sendMessage("There is a new update of Factions3Chat available at https://dev.bukkit.org/projects/factions3chat/files")
+        object : BukkitRunnable() {
+            override fun run() {
+                if (getNewVersion() == null) {
+                    return
+                }
+                event.player.sendMessage("There is a new update of Factions3Chat available at https://dev.bukkit.org/projects/factions3chat/files")
+
+            }
+
+        }.runTaskLaterAsynchronously(Main.instance, 6)
 
     }
 
-    fun getNewVersion (currentVersion : Double) : Double {
+    fun getNewVersion () : String? {
         val url = URL("https://servermods.forgesvc.net/servermods/files?projectids=359203")
         val conn = url.openConnection()
         conn.connectTimeout = 5000
@@ -49,15 +55,19 @@ object UpdateManager : BukkitRunnable(), Listener {
         val reader = BufferedReader(InputStreamReader(conn.getInputStream()))
         val response = reader.readLine()
         val gson = Gson()
-        val jsonArray = gson.fromJson<JsonArray>(response, JsonArray::class.java)
+        val jsonArray = gson.fromJson(response, JsonArray::class.java)
+        val cv = Main.instance.description.version.replace("v", "").replace(".", "").toInt()
         if (jsonArray.size() == 0) {
             Main.instance.logger.warning("No files found, or feed URL is bad")
-            return currentVersion
+            return null
         }
         val jsObj = jsonArray.get(jsonArray.size() - 1) as JsonObject
         var version = jsObj.get("name").asString
         version = version.substring(version.lastIndexOf("v") + 1)
-        return version.toDouble()
+        val nv = version.replace("v", "").replace(".", "").toInt()
+        if (nv > cv)
+            return version
+        return null
     }
 
 }

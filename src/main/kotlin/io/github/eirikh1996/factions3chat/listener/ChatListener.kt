@@ -10,13 +10,22 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
-class ChatListener : Listener {
+object ChatListener : Listener {
+    val qmPlayers = HashMap<UUID, ChatMode>()
 
     @EventHandler
     fun onPlayerChat(event : AsyncPlayerChatEvent) {
         val mSender = MPlayerColl.get().get(event.player)
-        val cm = Main.instance.chatModes.getOrDefault(event.player.uniqueId, ChatMode.GLOBAL)
+        val cm = if (qmPlayers.containsKey(event.player.uniqueId)) {
+            qmPlayers.get(event.player.uniqueId)
+        } else {
+            Main.instance.chatModes.getOrDefault(event.player.uniqueId, ChatMode.GLOBAL)
+        }!!
+
         val notReceiving = HashSet<Player>()
         for (recipient in event.recipients) {
             val essPlugin = Main.instance.essentialsPlugin
@@ -66,6 +75,10 @@ class ChatListener : Listener {
 
         val message = event.message
         event.message = TextColors.getColor(cm) + message
+
+        if (qmPlayers.containsKey(event.player.uniqueId)) {
+            qmPlayers.remove(event.player.uniqueId)
+        }
 
 
     }
