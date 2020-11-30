@@ -24,3 +24,5 @@ permissions:
     default: true
   factions3chat.neutral:
     default: true
+  factions3chat.world:
+    default: true

@@ -21,13 +21,15 @@ object ChatListener : Listener {
     fun onPlayerChat(event : AsyncPlayerChatEvent) {
         val mSender = MPlayerColl.get().get(event.player)
         val cm = if (qmPlayers.containsKey(event.player.uniqueId)) {
-            qmPlayers.get(event.player.uniqueId)
+            qmPlayers.remove(event.player.uniqueId)
         } else {
             Main.instance.chatModes.getOrDefault(event.player.uniqueId, ChatMode.GLOBAL)
         }!!
 
         val notReceiving = HashSet<Player>()
         for (recipient in event.recipients) {
+            if (recipient.equals(event.player))
+                continue
             val essPlugin = Main.instance.essentialsPlugin
             if (essPlugin != null) {
                 //Allow users with social spy enabled to see non-global chats
