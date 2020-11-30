@@ -75,9 +75,7 @@ class Main : JavaPlugin() {
         if (dsrv is DiscordSRV) {
             logger.info("DiscordSRV detected")
             discordSrvPlugin = dsrv
-            DiscordSRV.getPlugin().channels.put("staff", config.getString("DiscordStaffChannel", "000000000000000000")!!)
-            logger.info("Registered channel ID " + DiscordSRV.getPlugin().channels.get("staff") + " for staff chat")
-            DiscordSRV.api.subscribe(DiscordSRVListener())
+            DiscordSRV.api.subscribe(DiscordSRVListener)
         }
         //Check for Essentials
         val ess = server.pluginManager.getPlugin("Essentials")
